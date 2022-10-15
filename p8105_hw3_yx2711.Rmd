@@ -31,6 +31,21 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
+
+#Problem 1
+
+Load dataset `instacart`
+```{r}
+data("instacart")
+
+instacart = instacart %>%
+  as_tibble(instacart) %>% 
+  janitor::clean_names()
+```
+
+There are `r nrow(instacart)` rows and `r ncol(instacart)` columns in the `instacart` dataset, with each row representing one product of the order. Key variables include order details (order number, order time, etc), user id and product detail (product id, product name, products' departments). In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
+
+
 #Problem 2
 
 Read file and clean names.
@@ -79,6 +94,7 @@ By observing the table and the plot, it seems that there is no apparent trend be
 
 
 Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week.
+Use `geom_line()` to show the overall trend and use `geom_smooth()` to indicate variations within each day of a week.
 ```{r}
 plot_each_day = activity %>% 
   mutate(hour = as.numeric(minute) / 60) %>% 
