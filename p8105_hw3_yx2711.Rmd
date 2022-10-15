@@ -50,3 +50,29 @@ activity = read.csv("data/accel_data.csv") %>%
   )
 ```
 
+The dataset `activity` contains `r nrow(activity)` observations and `r ncol(activity)` variables. The variables are week, day_id, day, type (indicating whether it is weekday or weekend), activity, and counts. 
+
+Use `knitr::kable()` to create a table showing the total activity for each day.
+Also create a scatterplot to see whether there is a trend.
+```{r}
+activity %>% 
+  group_by(day_id) %>% 
+  summarize(sum_counts = sum(counts, na.rm = TRUE)) %>% 
+  knitr::kable(digits = 2)
+
+plot_total = activity %>% 
+  group_by(day_id) %>% 
+  summarize(sum_counts = sum(counts)) %>%
+  ggplot(aes(x = day_id, y = sum_counts)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "The total activity over the day",
+    x = "Day id",
+    y = "Total activity counts",
+    caption = "Data from the accel_data")
+
+plot_total
+```
+
+By observing the table and the plot, it seems that there is no apparent trend between total activity and day_id. 
