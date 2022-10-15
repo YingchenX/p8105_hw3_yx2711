@@ -45,6 +45,21 @@ instacart = instacart %>%
 
 There are `r nrow(instacart)` rows and `r ncol(instacart)` columns in the `instacart` dataset, with each row representing one product of the order. Key variables include order details (order number, order time, etc), user id and product detail (product id, product name, products' departments). In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
 
+Count number of aisles and identify which aisles are the most items ordered from.
+```{r}
+instacart %>% 
+  select(aisle) %>% 
+  distinct %>% 
+  count()
+
+instacart %>% 
+  group_by(aisle) %>% 
+  summarize(obs = n()) %>% 
+  arrange(desc(obs))
+```
+
+There are `r instacart %>% select(aisle) %>% distinct %>% count()` aisles and fresh vegetables and fresh fruits have the most orders. 
+
 
 #Problem 2
 
