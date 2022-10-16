@@ -32,7 +32,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-#Problem 1
+# Problem 1
 
 Load dataset `instacart`
 ```{r}
@@ -44,6 +44,7 @@ instacart = instacart %>%
 ```
 
 There are `r nrow(instacart)` rows and `r ncol(instacart)` columns in the `instacart` dataset, with each row representing one product of the order. Key variables include order details (order number, order time, etc), user id and product detail (product id, product name, products' departments). In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
+
 
 Count number of aisles and identify which aisles are the most items ordered from.
 ```{r}
@@ -60,6 +61,7 @@ instacart %>%
 
 There are `r instacart %>% select(aisle) %>% distinct %>% count()` aisles and fresh vegetables and fresh fruits have the most orders. 
 
+
 Make a plot that shows the number of items ordered in each aisle, arrange and organize.
 ```{r}
 instacart %>% 
@@ -71,6 +73,7 @@ instacart %>%
   labs(title = "Number of items ordered in each aisle") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
+
 
 Make a table showing the three most popular items in each of the aisles "baking ingredients", "dog food care', and "packaged vegetables fruit."
 ```{r}
@@ -84,6 +87,7 @@ instacart %>%
   knitr::kable()
 ```
 
+
 Make a table showing the mean hour the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week
 ```{r}
 instacart %>%
@@ -95,7 +99,7 @@ instacart %>%
 ```
 
 
-#Problem 2
+# Problem 2
 
 Read file and clean names.
 Use `mutate()` to add a type variable to indicate that whether the day is a weekend or a weekday.
@@ -115,6 +119,7 @@ activity = read.csv("data/accel_data.csv") %>%
 ```
 
 The dataset `activity` contains `r nrow(activity)` observations and `r ncol(activity)` variables. The variables are week, day_id, day, type (indicating whether it is a weekday or weekend), minute, and activity counts. 
+
 
 Use `knitr::kable()` to create a table showing the total activity for each day.
 Also create a scatterplot to see whether there is a trend.
@@ -163,7 +168,7 @@ Based on the overall graph, we can observe that the overall activity counts are 
 Based on the `geom_smooth()`, we can observe there are differences between each day of a week. There is a distinct peak at around 10 am for Sunday and there is a distinct peak at around 10 pm for Friday.  
 
 
-#Problem 3
+# Problem 3
 
 Load dataset `ny_noaa`.
 ```{r}
@@ -177,3 +182,27 @@ ny_noaa = ny_noaa %>%
 
 The `ny_noaa` dataset contains `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. The key variables are weather station id, date, precipitation, snowfall, snow depth, maximum temperature and minimum temperature. There are `r sum(is.na(ny_noaa$prcp))` missing values in the precipitation variables, `r sum(is.na(ny_noaa$snow))` missing values in the snow fall variables,
 `r sum(is.na(ny_noaa$snwd))` missing values in the snow depth variables, `r sum(is.na(ny_noaa$tmax))` missing values in the maximum temperature variables and `r sum(is.na(ny_noaa$tmin))` missing values in the minimum temperature variables.
+
+
+Create separate variables for year, month, and day and ensure observations for temperature, precipitation, and snowfall are given in reasonable units.
+```{r}
+ny_noaa = ny_noaa %>% 
+  separate(date, c("year", "month", "day")) %>% 
+  mutate(
+    prcp = prcp / 10,
+    tmax = as.numeric(tmax) / 10,
+    tmin = as.numeric(tmin) / 10,
+    year = as.factor(year),
+    month = as.factor(month),
+    day = as.numeric(day)
+  )
+
+ny_noaa %>% 
+  group_by(snow) %>% 
+  summarize(n = n()) %>% 
+  arrange(desc(n))
+```
+
+The date variable has been separated into three variables year, month and day. The units of precipitation has changed to mm and the units of tmax and tmin has changed to degrees C. 
+The most commonly observed value for snowfall is 0. Since snowfall only occurs in the winter and for the rest of the year, the occurrence of snowfall would be 0. 
+
