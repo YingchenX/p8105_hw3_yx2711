@@ -158,7 +158,8 @@ plot_each_day = activity %>%
   labs(
     title = "The 24-hour activity time courses for each day",
     x = "Hour",
-    y = "Activity counts") +
+    y = "Activity counts",
+    caption = "Data from the accel_data") +
   scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24))
 
 plot_each_day
@@ -192,8 +193,8 @@ ny_noaa = ny_noaa %>%
     prcp = prcp / 10,
     tmax = as.numeric(tmax) / 10,
     tmin = as.numeric(tmin) / 10,
-    year = as.factor(year),
-    month = as.factor(month),
+    year = as.numeric(year),
+    month = as.numeric(month),
     day = as.numeric(day)
   )
 
@@ -205,4 +206,35 @@ ny_noaa %>%
 
 The date variable has been separated into three variables year, month and day. The units of precipitation has changed to mm and the units of tmax and tmin has changed to degrees C. 
 The most commonly observed value for snowfall is 0. Since snowfall only occurs in the winter and for the rest of the year, the occurrence of snowfall would be 0. 
+
+
+Make a two-panel plot showing the average max temperature in January and in July in each station across years.
+```{r}
+plot_Jan_vs_Jul = ny_noaa %>% 
+  filter(
+    month == c(1, 7),
+    !is.na(tmax)) %>% 
+  mutate(
+    month = recode(month, "01" = "January", "07" = "July")
+  ) %>% 
+  group_by(id, month, year) %>% 
+  summarize(avg_max = mean(tmax)) %>% 
+  ggplot(aes(x = year, y = avg_max)) +
+  geom_point() +
+  geom_line() +
+  facet_grid(.~month) +
+  labs(
+    title = "The average max temperature in January and July in each station across years",
+    x = "Year",
+    y = "Average maximum temerature (degrees C)",
+    caption = "Data from p8105 package - `NY_NOAA`"
+  ) + 
+  scale_x_continuous(n.break = 10)
+  
+
+plot_Jan_vs_Jul
+```
+
+The overall average maximum temperature is higher in July in each station across years than in January. There are fluctuations in average maximum temperature in each station over the years in these two months. In each year, the ranges of average maximum temperatures in each station are smaller in July than in January on average. There are outliers. For example, in January 2004, there is one station that has average maximum temperature of 14 degrees C, which is much higher than the rest in January. In July 1988, there is one station that has average maximum temperature of around 14 degrees C, which is much lower than the rest in July. 
+
 
